@@ -13,6 +13,9 @@ public class Sender {
         System.out.println("Sender Class : Main Function");
         String message ="Hello Spring JMS";
         System.out.println("Sending Message : " + message);
-        sender.sendMessage(message);
+        for(int i=1;i<=10;i++){
+            sender.sendMessage(String.valueOf(i)+" : "+message);
+        }
+
     }
 }

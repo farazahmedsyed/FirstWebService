@@ -26,16 +26,16 @@
         <property name="jndiTemplate" ref="jndiTemplate"></property>
         <property name="jndiName" value="jms/RemoteConnectionFactory"></property>
     </bean>
-    <bean id="queueConnectionFactory" class="org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter">
+    <bean id="destConnectionFactory" class="org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter">
         <property name="targetConnectionFactory" ref="connectionFactory"></property>
         <property name="username" value="guestUser"></property>
         <property name="password" value="password"></property>
     </bean>
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-        <property name="connectionFactory" ref="queueConnectionFactory"></property>
+        <property name="connectionFactory" ref="destConnectionFactory"></property>
     </bean>
     <bean id="listenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-        <property name="connectionFactory" ref="queueConnectionFactory" />
+        <property name="connectionFactory" ref="destConnectionFactory" />
         <property name="destination" ref="destination" />
         <property name="messageListener" ref="Subscriber" />
     </bean>
