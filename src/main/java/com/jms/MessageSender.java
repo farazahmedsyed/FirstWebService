@@ -1,44 +1,31 @@
 package main.java.com.jms;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
-import javax.jms.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import java.util.Properties;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.Session;
 
-/**
- * Created by Venturdive on 20/02/2017.
- */
 public class MessageSender {
-    private static final String USER = "guestUser";
-    private static final String PASSWORD = "password";
-
-    public static void main(String args[]) {
-        Properties env = new Properties();
-        env.put(Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-        env.put(Context.PROVIDER_URL, "http-remoting://localhost:8080");
-        env.put(Context.SECURITY_PRINCIPAL, USER);
-        env.put(Context.SECURITY_CREDENTIALS, PASSWORD);
-
+    public static void main(String[] args) {
         try {
-            Context ctx = new InitialContext(env);
-            //http-remoting by default search in java:jboss/exported/ , hence complete path is java:/jboss/exported/jms/RemoteConnectionFactory
-            ConnectionFactory factory = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
-            Connection connection = factory.createConnection(USER, PASSWORD);
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination dest = (Destination) ctx.lookup("jms/queue/testQ");
-
-            MessageProducer sender = session.createProducer(dest);
-            TextMessage message = session.createTextMessage("Hello World JMS");
-            sender.send(message);
-            System.out.println("Sent message to queue.");
-
-            connection.close();
-            ctx.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+            JmsTemplate template = (JmsTemplate) ctx.getBean("jmsTemplate");
+            Destination dest = (Destination) ctx.getBean("destination");
+            MessageCreator creator = new MessageCreator() {
+                public Message createMessage(Session session) throws JMSException {
+                    return session.createTextMessage("Message:Spring JMS Integration");
+                }
+            };
+            template.send(dest, creator);
+            System.out.println("Message sent.");
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
-
-
 }
