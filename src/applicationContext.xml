@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/cache"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
     <context:component-scan base-package="main" />
     <context:annotation-config/>
-    <bean id="MessageSender" class="main.java.com.jms.MessageSender" />
-    <bean id="Subscriber" class="main.java.com.jms.Subscriber" />
+    <jms:annotation-driven/>
+   <!-- <bean id="Subscriber" class="main.java.com.subscriber.Subscriber" />-->
     <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
         <property name="environment">
             <props>
@@ -26,18 +26,25 @@
         <property name="jndiTemplate" ref="jndiTemplate"></property>
         <property name="jndiName" value="jms/RemoteConnectionFactory"></property>
     </bean>
-    <bean id="queueConnectionFactory" class="org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter">
+    <bean id="destConnectionFactory" class="org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter">
         <property name="targetConnectionFactory" ref="connectionFactory"></property>
         <property name="username" value="guestUser"></property>
         <property name="password" value="password"></property>
     </bean>
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-        <property name="connectionFactory" ref="queueConnectionFactory"></property>
+        <property name="connectionFactory" ref="destConnectionFactory"></property>
     </bean>
-    <bean id="listenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-        <property name="connectionFactory" ref="queueConnectionFactory" />
+    <bean id="jmsListenerContainerFactory" class="org.springframework.jms.config.DefaultJmsListenerContainerFactory">
+        <property name="connectionFactory" ref="destConnectionFactory"/>
+        <property name="pubSubDomain" value="true"/>
+        <property name="concurrency" value="1-10"/>
+    </bean>
+   <!-- <bean id="listenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="destConnectionFactory" />
         <property name="destination" ref="destination" />
         <property name="messageListener" ref="Subscriber" />
-    </bean>
+       &lt;!&ndash; <property name="subscriptionDurable" value="true"/>
+        <property name="durableSubscriptionName" value="temporaryTopic"/>&ndash;&gt;
+    </bean>-->
 
 </beans>

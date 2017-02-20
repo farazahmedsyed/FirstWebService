@@ -8,7 +8,5 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jboss-client" level="project" />
-    <orderEntry type="library" name="spring-aop-4.3.6.RELEASE" level="project" />
-    <orderEntry type="library" name="spring-messaging-4.3.6.RELEASE" level="project" />
   </component>
 </module>
