@@ -18,10 +18,6 @@
             </props>
         </property>
     </bean>
-    <bean id="destination" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiTemplate" ref="jndiTemplate"></property>
-        <property name="jndiName" value="jms/queue/testTopic"></property>
-    </bean>
     <bean id="connectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiTemplate" ref="jndiTemplate"></property>
         <property name="jndiName" value="jms/RemoteConnectionFactory"></property>
@@ -31,13 +27,13 @@
         <property name="username" value="guestUser"></property>
         <property name="password" value="password"></property>
     </bean>
-    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+   <!-- <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="destConnectionFactory"></property>
-    </bean>
+    </bean>-->
     <bean id="jmsListenerContainerFactory" class="org.springframework.jms.config.DefaultJmsListenerContainerFactory">
         <property name="connectionFactory" ref="destConnectionFactory"/>
         <property name="pubSubDomain" value="true"/>
-        <!--<property name="concurrency" value="1-10"/>-->
+        <!--<property name="concurrency" value="1-20"/>-->
     </bean>
    <!-- <bean id="listenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="destConnectionFactory" />
