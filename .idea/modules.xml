@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FirstWebService.iml" filepath="$PROJECT_DIR$/FirstWebService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JMSSimpleJ2EE-Sender.iml" filepath="$PROJECT_DIR$/JMSSimpleJ2EE-Sender.iml" />
     </modules>
   </component>
 </project>
