@@ -37,7 +37,7 @@
     <bean id="jmsListenerContainerFactory" class="org.springframework.jms.config.DefaultJmsListenerContainerFactory">
         <property name="connectionFactory" ref="destConnectionFactory"/>
         <property name="pubSubDomain" value="true"/>
-        <property name="concurrency" value="1-10"/>
+        <!--<property name="concurrency" value="1-10"/>-->
     </bean>
    <!-- <bean id="listenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="destConnectionFactory" />
