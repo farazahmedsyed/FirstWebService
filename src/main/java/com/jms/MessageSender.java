@@ -22,10 +22,11 @@ public class MessageSender {
 
         try {
             Context ctx = new InitialContext(env);
-            ConnectionFactory factory = (ConnectionFactory) ctx.lookup("java:/jms/RemoteConnectionFactory");
+            //http-remoting by default search in java:jboss/exported/ , hence complete path is java:/jboss/exported/jms/RemoteConnectionFactory
+            ConnectionFactory factory = (ConnectionFactory) ctx.lookup("jms/RemoteConnectionFactory");
             Connection connection = factory.createConnection(USER, PASSWORD);
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination dest = (Destination) ctx.lookup("java:/jms/queue/testQ");
+            Destination dest = (Destination) ctx.lookup("jms/queue/testQ");
 
             MessageProducer sender = session.createProducer(dest);
             TextMessage message = session.createTextMessage("Hello World JMS");
