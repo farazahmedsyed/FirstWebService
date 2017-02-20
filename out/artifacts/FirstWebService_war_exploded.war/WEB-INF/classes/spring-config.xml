@@ -26,7 +26,8 @@
               <property name="password" value="password" />
        </bean>-->
     <jee:jndi-lookup id="DataSource" jndi-name="java:/MySQLXADS" expected-type="javax.sql.DataSource"/>
-   <!-- <jee:jndi-lookup id="entityManagerFactory" jndi-name="java:/MySqlDS" expected-type="javax.persistence.EntityManager" />
+    <jee:jndi-lookup id="DataSource2" jndi-name="java:/MySQLXADS2" expected-type="javax.sql.DataSource"/>
+    <!-- <jee:jndi-lookup id="entityManagerFactory" jndi-name="java:/MySqlDS" expected-type="javax.persistence.EntityManager" />
 -->
     <!-- Container Transaction Manager -->
    <!-- <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
@@ -34,10 +35,13 @@
                   value="java:/TransactionManager"/>
     </bean>-->
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <!--<property name="persistenceUnitName" value="MySQL" />-->
-        <!--<property name="dataSource" ref="DataSource" />-->
+        <property name="persistenceUnitName" value="MySQL" />
+        <property name="dataSource" ref="DataSource" />
     </bean>
-
+    <bean id="entityManagerFactory2" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="MySQL2" />
+        <property name="dataSource" ref="DataSource2" />
+    </bean>
        <!-- Transactions -->
         <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
              <property name="transactionManagerName" value="java:/TransactionManager" />

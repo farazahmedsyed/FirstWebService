@@ -7,11 +7,21 @@
     <persistence-unit name="MySQL" transaction-type="JTA">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:/MySQLXADS</jta-data-source>
-        <class>main.java.com.users.manager.Users</class>
+        <class>main.java.com.entities.User</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
           <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
               <!-- <property name="hibernate.ddl-auto" value="create-drop"  />-->
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="MySQL2" transaction-type="JTA">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>java:/MySQLXADS2</jta-data-source>
+        <class>main.java.com.entities.Employee</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" />
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+            <!-- <property name="hibernate.ddl-auto" value="create-drop"  />-->
         </properties>
     </persistence-unit>
 </persistence>
