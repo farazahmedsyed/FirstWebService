@@ -1,8 +1,15 @@
 package main.java.com.jms;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
@@ -12,33 +19,38 @@ import javax.naming.InitialContext;
 
 public class AsyncReceiver implements MessageListener, ExceptionListener
 {
+
+    @Autowired
+    Destination dest;
+    @Autowired
+    @Qualifier("queueConnectionFactory")
+    QueueConnectionFactory connFactory;
     static QueueConnection queueConn = null;
-    public static void main(String[] args) throws Exception
+    public void setReceiver()
     {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
-       Destination dest = (Destination) ctx.getBean("destination");
-        // lookup the queue connection factory
-        QueueConnectionFactory connFactory = (QueueConnectionFactory) ctx.getBean("queueConnectionFactory");
+       try {
+           queueConn = connFactory.createQueueConnection();
 
-        // create a queue connection
-        queueConn = connFactory.createQueueConnection();
 
-        // create a queue session
-        QueueSession queueSession = queueConn.createQueueSession(false,Session.AUTO_ACKNOWLEDGE);
+           // create a queue session
+           QueueSession queueSession = queueConn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        // create a queue receiver
-        QueueReceiver queueReceiver = queueSession.createReceiver((Queue)dest);
+           // create a queue receiver
+           QueueReceiver queueReceiver = queueSession.createReceiver((Queue) dest);
 
-        // set an asynchronous message listener
-        AsyncReceiver asyncReceiver = new AsyncReceiver();
-        queueReceiver.setMessageListener(asyncReceiver);
+           // set an asynchronous message listener
+           AsyncReceiver asyncReceiver = new AsyncReceiver();
+           queueReceiver.setMessageListener(asyncReceiver);
 
-        // set an asynchronous exception listener on the connection
-        queueConn.setExceptionListener(asyncReceiver);
+           // set an asynchronous exception listener on the connection
+           queueConn.setExceptionListener(asyncReceiver);
 
-        // start the connection
-        queueConn.start();
-        while (true){}
+           // start the connection
+           queueConn.start();
+       }
+       catch (Exception e){
+           e.printStackTrace();
+       }
     }
 
     /**
@@ -54,7 +66,7 @@ public class AsyncReceiver implements MessageListener, ExceptionListener
         try {
             if(msg.getText().equals("exit")){
                 queueConn.close();
-                System.out.println("Application Exits");
+                System.out.println("Sender Exits");
             }else{
                 System.out.println("received: " + msg.getText());
             }

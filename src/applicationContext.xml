@@ -2,8 +2,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-   <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+       xmlns:mvc="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <context:component-scan base-package="main" />
+    <context:annotation-config/>
+    <bean id="AsyncReceiver" class="main.java.com.jms.AsyncReceiver"/>
+    <bean id="MessageSender" class="main.java.com.jms.MessageSender" />
+    <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
         <property name="environment">
             <props>
                 <prop key="java.naming.factory.initial">org.jboss.naming.remote.client.InitialContextFactory</prop>
