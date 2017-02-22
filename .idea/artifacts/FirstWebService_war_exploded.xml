@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="FirstWebService:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/FirstWebService_war_exploded.war</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="FirstWebService/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="FirstWebService" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="aopalliance-1.0" />
+          <element id="library" level="project" name="asm-3.3.1" />
+          <element id="library" level="project" name="jackson-annotations-2.8.1" />
+          <element id="library" level="project" name="slf4j-simple-1.7.23" />
+          <element id="library" level="project" name="jms-api-1.1-rev-1" />
+          <element id="library" level="project" name="jboss-client" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

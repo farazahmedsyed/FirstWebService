@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/JMS-Spring.iml" filepath="$PROJECT_DIR$/JMS-Spring.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FirstWebService.iml" filepath="$PROJECT_DIR$/FirstWebService.iml" />
     </modules>
   </component>
 </project>

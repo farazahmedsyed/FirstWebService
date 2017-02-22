@@ -1,0 +1,83 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+        <context:component-scan base-package="main" />
+        <mvc:annotation-driven />
+
+    <jee:jndi-lookup id="DataSource" jndi-name="java:/MySQLXADS" expected-type="javax.sql.DataSource"/>
+    <jee:jndi-lookup id="DataSource2" jndi-name="java:/MySQLXADS2" expected-type="javax.sql.DataSource"/>
+    <bean id="userService" class="main.java.com.service.UserService"/>
+    <bean id="Publisher" class="main.java.com.jms.publisher.Publisher" />
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="MySQL" />
+        <property name="dataSource" ref="DataSource" />
+    </bean>
+    <bean id="entityManagerFactory2" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="MySQL2" />
+        <property name="dataSource" ref="DataSource2" />
+    </bean>
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+             <property name="transactionManagerName" value="java:/TransactionManager" />
+    </bean>
+    <bean id="jndiTemplate" class="org.springframework.jndi.JndiTemplate">
+        <property name="environment">
+            <props>
+                <prop key="java.naming.factory.initial">org.jboss.naming.remote.client.InitialContextFactory</prop>
+                <prop key="java.naming.provider.url">http-remoting://localhost:8080</prop>
+                <prop key="java.naming.security.principal">guestUser</prop>
+                <prop key="java.naming.security.credentials">password</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="connectionFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="jndiTemplate"></property>
+        <property name="jndiName" value="jms/RemoteConnectionFactory"></property>
+
+    </bean>
+    <bean id="destConnectionFactory" class="org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter">
+
+        <property name="targetConnectionFactory" ref="connectionFactory"></property>
+        <property name="username" value="guestUser"></property>
+        <property name="password" value="password"></property>
+
+    </bean>
+  <!--  <bean id="durableConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="destConnectionFactory"/>
+        <property name="clientId" value="1" />
+    </bean>-->
+    <bean id="ListenerErrorHandler" class="main.java.com.jms.subscriber.ListenerErrorHandler"/>
+    <bean id="jmsListenerContainerFactory" class="org.springframework.jms.config.DefaultJmsListenerContainerFactory">
+        <property name="connectionFactory" ref="destConnectionFactory"/>
+        <property name="pubSubDomain" value="false"/>
+        <property name="errorHandler" ref="ListenerErrorHandler"/>
+        <property name="sessionTransacted" value="true"/>
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+    <bean id="destination" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiTemplate" ref="jndiTemplate"></property>
+        <property name="jndiName" value="jms/queue/testQ"></property>
+    </bean>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="destConnectionFactory"></property>
+        <property name="defaultDestination" ref="destination"/>
+        <!--<property name="deliveryPersistent" value="false"/>-->
+        <!--<property name="sessionTransacted" value="true"/>-->
+        <!--<property name="sessionAcknowledgeModeName" value="CLIENT_ACKNOWLEDGE"/>-->
+
+    </bean>
+    <jms:annotation-driven/>
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>
